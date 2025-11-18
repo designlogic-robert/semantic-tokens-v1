@@ -122,6 +122,19 @@ Practical examples:
 ### `/schemas/`
 Optional subfolder for future JSON/YAML schema definitions.
 
+# Slide Deck (3-Slide Overview)
+
+## Slide 1 — Problem
+![Slide 1](paper/1.png)
+
+## Slide 2 — Solution
+![Slide 2](paper/2.png)
+
+## Slide 3 — Architecture
+![Slide 3](paper/3.png)
+
+
+
 ---
 
 ## 5. Versioning
