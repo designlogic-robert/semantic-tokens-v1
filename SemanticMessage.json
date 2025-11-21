@@ -1,0 +1,100 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://interrealm.io/schemas/semantic-message/v1",
+  "title": "SemanticMessage",
+  "description": "Canonical envelope for token-based routing over WebSocket/ORCH-C",
+  "type": "object",
+  "required": ["header", "body"],
+  "additionalProperties": false,
+  "properties": {
+    "header": {
+      "$ref": "#/$defs/SemanticHeader"
+    },
+    "body": {
+      "$ref": "#/$defs/SemanticToken"
+    }
+  },
+  "$defs": {
+    "SemanticHeader": {
+      "title": "SemanticHeader",
+      "description": "Canonical header used by ORCH-C and the gateway/router. ORCH-C should only need this object to make routing decisions.",
+      "type": "object",
+      "required": ["version", "tokenFamily", "tokenKind", "realmId", "createdAt"],
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "type": "string",
+          "const": "sem-msg/v1",
+          "description": "Wire format version"
+        },
+        "tokenFamily": {
+          "type": "string",
+          "minLength": 1,
+          "description": "High-level category of the token (e.g., 'chat', 'ui', 'document', 'rfp', 'graph', 'system')"
+        },
+        "tokenKind": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Concrete kind within a family (e.g., 'user_message', 'model_reply', 'rfp_pdf')"
+        },
+        "realmId": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Logical boundary for routing (typically tenant → realm → subrealm)"
+        },
+        "sourceMemberId": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Who sent this (for fan-out / exclude-sender cases)"
+        },
+        "correlationId": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Identifier that ties a set of related messages together"
+        },
+        "traceId": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Distributed tracing identifier"
+        },
+        "agentIntent": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional 'why' for the message (e.g., 'analyze', 'extract', 'summarize', 'respond')"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp for debugging / ordering"
+        }
+      }
+    },
+    "SemanticToken": {
+      "title": "SemanticToken",
+      "description": "Invariant semantic token payload. ORCH-C does NOT look inside this; only agents care.",
+      "type": "object",
+      "required": ["tokenId", "family", "kind", "payload"],
+      "additionalProperties": false,
+      "properties": {
+        "tokenId": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Unique identifier for this token"
+        },
+        "family": {
+          "type": "string",
+          "minLength": 1,
+          "description": "High-level category (should match header.tokenFamily)"
+        },
+        "kind": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Concrete kind (should match header.tokenKind)"
+        },
+        "payload": {
+          "description": "The actual meaning-bearing content. Structure varies by (family, kind)."
+        }
+      }
+    }
+  }
+}
